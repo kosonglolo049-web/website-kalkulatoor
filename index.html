@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Kalkulator Modern</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      transition: background 0.3s ease;
+    }
+
+    .calculator {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      width: 340px;
+      backdrop-filter: blur(10px);
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .display {
+      width: 100%;
+      height: 50px;
+      font-size: 24px;
+      padding: 10px;
+      text-align: right;
+      border: none;
+      border-radius: 12px;
+      margin-bottom: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    .sub-text {
+      text-align: right;
+      font-size: 14px;
+      color: #eee;
+      opacity: 0.8;
+      margin-bottom: 15px;
+      height: 18px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .button {
+      padding: 15px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .button.operator {
+      background: rgba(255, 99, 132, 0.6);
+    }
+
+    .button.equal {
+      background: rgba(75, 192, 192, 0.6);
+    }
+
+    .button.clear {
+      background: rgba(255, 0, 0, 0.6);
+      grid-column: span 4;
+    }
+
+    .controls {
+      margin-top: 20px;
+      text-align: center;
+      color: white;
+    }
+
+    .controls input {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      cursor: pointer;
+    }
+
+    .controls input:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .currency {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      text-align: center;
+      color: white;
+    }
+
+    .currency input, .currency select, .currency button {
+      margin: 8px;
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+    .currency button {
+      cursor: pointer;
+    }
+    .currency button:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* History */
+    .history {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 15px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      width: 320px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .history h3 {
+      margin: 0 0 10px 0;
+    }
+    .history p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    /* Tulisan kecil */
+    .small-text {
+      display: block;
+      font-size: 15px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator">
+    <h2>Kalkulator</h2>
+    <input type="text" id="display" class="display" disabled>
+    <div id="subText" class="sub-text"></div>
+
+    <div class="buttons">
+      <button class="button" onclick="appendToDisplay('7')">7 <span class="small-text">Seven</span></button>
+      <button class="button" onclick="appendToDisplay('8')">8 <span class="small-text">Eight</span></button>
+      <button class="button" onclick="appendToDisplay('9')">9 <span class="small-text">Nine</span></button>
+      <button class="button operator" onclick="appendToDisplay('/')">÷</button>
+
+      <button class="button" onclick="appendToDisplay('4')">4 <span class="small-text">Four</span></button>
+      <button class="button" onclick="appendToDisplay('5')">5 <span class="small-text">Five</span></button>
+      <button class="button" onclick="appendToDisplay('6')">6 <span class="small-text">Six</span></button>
+      <button class="button operator" onclick="appendToDisplay('*')">×</button>
+
+      <button class="button" onclick="appendToDisplay('1')">1 <span class="small-text">One</span></button>
+      <button class="button" onclick="appendToDisplay('2')">2 <span class="small-text">Two</span></button>
+      <button class="button" onclick="appendToDisplay('3')">3 <span class="small-text">Three</span></button>
+      <button class="button operator" onclick="appendToDisplay('-')">−</button>
+
+      <button class="button" onclick="appendToDisplay('0')">0 <span class="small-text">Zero</span></button>
+      <button class="button" onclick="appendToDisplay('.')">.</button>
+      <button class="button equal" onclick="calculate()">=</button>
+      <button class="button operator" onclick="appendToDisplay('+')">+</button>
+
+      <button class="button clear" onclick="clearDisplay()">C</button>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <div>
+      <label for="bgColorPicker">🎨 Ganti Warna Background:</label><br>
+      <input type="color" id="bgColorPicker" onchange="setColorBackground()">
+    </div>
+  </div>
+
+  <!-- Konversi Mata Uang -->
+  <div class="currency">
+    <h3>💱 Konversi Mata Uang</h3>
+    <input type="number" id="amount" placeholder="Masukkan nominal">
+    <br>
+    <select id="fromCurrency">
+      <option value="IDR">IDR (Rupiah)</option>
+      <option value="USD">USD (Dolar)</option>
+      <option value="EUR">EUR (Euro)</option>
+      <option value="JPY">JPY (Yen)</option>
+    </select>
+    ➡️
+    <select id="toCurrency">
+      <option value="USD">USD (Dolar)</option>
+      <option value="IDR">IDR (Rupiah)</option>
+      <option value="EUR">EUR (Euro)</option>
+      <option value="JPY">JPY (Yen)</option>
+    </select>
+    <br>
+    <button onclick="convertCurrency()">Konversi</button>
+    <p id="result"></p>
+  </div>
+
+  <!-- History -->
+  <div class="history" id="history">
+    <h3>📜 History</h3>
+  </div>
+
+<script>
+  const display = document.getElementById('display');
+  const historyEl = document.getElementById('history');
+  const subText = document.getElementById('subText');
+
+  // ==== Fungsi bicara angka (Indonesia) ====
+  function speakNumber(number) {
+    const utterance = new SpeechSynthesisUtterance(number.toString());
+    utterance.lang = 'id-ID'; // Bahasa Indonesia
+    speechSynthesis.speak(utterance);
+  }
+
+  // ==== Fungsi append ====
+  function appendToDisplay(value) {
+    display.value += value;
+    subText.innerText = "Sedang menghitung...";
+    playSound(value);
+
+    // Jika value angka, sebutkan
+    if (!isNaN(value)) {
+      speakNumber(value);
+    }
+  }
+
+  function clearDisplay() {
+    display.value = '';
+    subText.innerText = '';
+  }
+
+  function calculate() {
+    try {
+      let expression = display.value;
+      let result = eval(expression);
+      display.value = result;
+      subText.innerText = "Selesai ✅";
+
+      addHistory(`${expression} = ${result}`);
+    } catch {
+      display.value = 'Error';
+      subText.innerText = 'Terjadi kesalahan ❌';
+    }
+  }
+
+  function setColorBackground() {
+    const color = document.getElementById('bgColorPicker').value;
+    document.body.style.background = color;
+  }
+
+  // ====== Konversi Mata Uang ======
+  const rates = {
+    "IDR": 1,
+    "USD": 16000,
+    "EUR": 18000,
+    "JPY": 110
+  };
+
+  function convertCurrency() {
+    const amount = parseFloat(document.getElementById("amount").value);
+    const from = document.getElementById("fromCurrency").value;
+    const to = document.getElementById("toCurrency").value;
+    const resultEl = document.getElementById("result");
+
+    if (isNaN(amount)) {
+      resultEl.innerText = "⚠️ Masukkan nominal yang valid!";
+      return;
+    }
+
+    let amountInIDR = amount * rates[from];
+    let converted = amountInIDR / rates[to];
+
+    let text = `${amount} ${from} = ${converted.toFixed(2)} ${to}`;
+    resultEl.innerText = text;
+
+    addHistory(text);
+  }
+
+  // ====== Tambah ke History ======
+  function addHistory(entry) {
+    const p = document.createElement("p");
+    p.textContent = entry;
+    historyEl.appendChild(p);
+    historyEl.scrollTop = historyEl.scrollHeight; // auto-scroll
+  }
+
+  // === Fungsi bunyi klik (angka 1-9 pakai file lokal, selain itu bunyi default) ===
+  function playSound(value) {
+    let audio;
+    if (!isNaN(value) && value >= 0 && value <= 9) {
+      audio = new Audio(value + ".mp3"); // contoh: "1.mp3"
+    } else {
+      audio = new Audio("click.mp3"); // siapkan file "click.mp3" untuk operator/dll
+    }
+    audio.play();
+  }
+</script>
+
+</body>
+</html>
